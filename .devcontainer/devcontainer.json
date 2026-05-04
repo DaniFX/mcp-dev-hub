@@ -1,15 +1,6 @@
 {
   "name": "mcp-dev-hub [develop]",
-  "image": "mcr.microsoft.com/devcontainers/go:1.22",
-
-  "features": {
-    "ghcr.io/devcontainers/features/go:1": {
-      "version": "1.22"
-    },
-    "ghcr.io/devcontainers/features/gcloud-cli:1": {},
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
-  },
+  "image": "mcr.microsoft.com/devcontainers/go:1-bookworm",
 
   "postCreateCommand": "bash .devcontainer/setup.sh",
 
@@ -52,8 +43,7 @@
         },
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "golang.go",
-        "files.eol": "\n",
-        "git.defaultBranchName": "develop"
+        "files.eol": "\n"
       }
     }
   },
