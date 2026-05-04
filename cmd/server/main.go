@@ -6,11 +6,43 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	ghclient "github.com/DaniFX/mcp-dev-hub/internal/github"
 	"github.com/DaniFX/mcp-dev-hub/internal/mcp"
 	"github.com/DaniFX/mcp-dev-hub/internal/mcp/tools"
 )
+
+// loadAccounts scans env vars with prefix GITHUB_TOKEN_<ALIAS>
+// and builds the account list dynamically.
+// Example:
+//
+//	GITHUB_TOKEN_PERSONAL=ghp_xxx  → alias "personal"
+//	GITHUB_TOKEN_WORK=ghp_yyy      → alias "work"
+func loadAccounts() []ghclient.Account {
+	accounts := []ghclient.Account{}
+	const prefix = "GITHUB_TOKEN_"
+	for _, env := range os.Environ() {
+		if !strings.HasPrefix(env, prefix) {
+			continue
+		}
+		parts := strings.SplitN(env, "=", 2)
+		if len(parts) != 2 || parts[1] == "" {
+			continue
+		}
+		alias := strings.ToLower(strings.TrimPrefix(parts[0], prefix))
+		accounts = append(accounts, ghclient.Account{Alias: alias, Token: parts[1]})
+		log.Printf("account loaded: %s", alias)
+	}
+	// fallback: plain GITHUB_TOKEN → alias "default"
+	if len(accounts) == 0 {
+		if token := os.Getenv("GITHUB_TOKEN"); token != "" {
+			accounts = append(accounts, ghclient.Account{Alias: "default", Token: token})
+			log.Printf("account loaded: default (from GITHUB_TOKEN)")
+		}
+	}
+	return accounts
+}
 
 func main() {
 	port := os.Getenv("PORT")
@@ -18,12 +50,10 @@ func main() {
 		port = "8080"
 	}
 
-	// --- load GitHub accounts from env (single account quick setup) ---
-	accounts := []ghclient.Account{}
-	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
-		accounts = append(accounts, ghclient.Account{Alias: "default", Token: token})
+	accounts := loadAccounts()
+	if len(accounts) == 0 {
+		log.Println("[warn] no GitHub accounts configured — set GITHUB_TOKEN_<ALIAS> in .env")
 	}
-	// TODO: load additional accounts from configs/accounts.json
 
 	mc := ghclient.NewMultiClient(accounts)
 
@@ -36,7 +66,7 @@ func main() {
 	mux.HandleFunc("/health", healthHandler)
 	mux.HandleFunc("/mcp", mcpHandler(h))
 
-	log.Printf("mcp-dev-hub listening on :%s — tools: list_repos", port)
+	log.Printf("mcp-dev-hub listening on :%s — accounts: %d — tools: list_repos", port, len(accounts))
 	if err := http.ListenAndServe(":"+port, mux); err != nil {
 		log.Fatalf("server error: %v", err)
 	}
@@ -48,7 +78,6 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, `{"status":"ok","tools":["list_repos"]}`)
 }
 
-// mcpRequest represents a JSON-RPC 2.0 MCP request.
 type mcpRequest struct {
 	JSONRPC string                 `json:"jsonrpc"`
 	ID      interface{}            `json:"id"`
@@ -56,7 +85,6 @@ type mcpRequest struct {
 	Params  map[string]interface{} `json:"params"`
 }
 
-// mcpResponse represents a JSON-RPC 2.0 MCP response.
 type mcpResponse struct {
 	JSONRPC string      `json:"jsonrpc"`
 	ID      interface{} `json:"id"`
@@ -77,7 +105,6 @@ func mcpHandler(h *mcp.Handler) http.HandlerFunc {
 			return
 		}
 
-		// Only handle tools/call for now
 		if req.Method != "tools/call" {
 			writeError(w, req.ID, -32601, "method not found", req.Method)
 			return
