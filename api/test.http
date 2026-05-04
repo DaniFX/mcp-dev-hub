@@ -1,12 +1,7 @@
 ### Health check
 GET http://localhost:8080/health
 
-### MCP ping
-GET http://localhost:8080/mcp
-X-API-Key: changeme
-Content-Type: application/json
-
-### MCP tool call — list_repos (stub)
+### list_repos — account default (via GITHUB_TOKEN env)
 POST http://localhost:8080/mcp
 X-API-Key: changeme
 Content-Type: application/json
@@ -18,12 +13,14 @@ Content-Type: application/json
   "params": {
     "name": "list_repos",
     "arguments": {
-      "account": "personal"
+      "account": "default",
+      "type": "owner",
+      "page": 1
     }
   }
 }
 
-### MCP tool call — get_pipeline_status (stub)
+### list_repos — solo repo pubblici
 POST http://localhost:8080/mcp
 X-API-Key: changeme
 Content-Type: application/json
@@ -33,11 +30,42 @@ Content-Type: application/json
   "id": 2,
   "method": "tools/call",
   "params": {
-    "name": "get_pipeline_status",
+    "name": "list_repos",
     "arguments": {
-      "account": "personal",
-      "owner": "DaniFX",
-      "repo": "mcp-dev-hub"
+      "account": "default",
+      "type": "public"
     }
+  }
+}
+
+### list_repos — account non esistente (test errore)
+POST http://localhost:8080/mcp
+X-API-Key: changeme
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "list_repos",
+    "arguments": {
+      "account": "nonexistent"
+    }
+  }
+}
+
+### tool non esistente (test errore)
+POST http://localhost:8080/mcp
+X-API-Key: changeme
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "tools/call",
+  "params": {
+    "name": "unknown_tool",
+    "arguments": {}
   }
 }
