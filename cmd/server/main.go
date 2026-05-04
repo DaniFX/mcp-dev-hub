@@ -92,6 +92,14 @@ type mcpResponse struct {
 	Error   interface{} `json:"error,omitempty"`
 }
 
+// writeJSON encodes v as JSON into w, logging any encoding error.
+func writeJSON(w http.ResponseWriter, v interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(v); err != nil {
+		log.Printf("writeJSON error: %v", err)
+	}
+}
+
 func mcpHandler(h *mcp.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
@@ -119,8 +127,7 @@ func mcpHandler(h *mcp.Handler) http.HandlerFunc {
 			return
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(mcpResponse{
+		writeJSON(w, mcpResponse{
 			JSONRPC: "2.0",
 			ID:      req.ID,
 			Result:  result,
@@ -129,9 +136,7 @@ func mcpHandler(h *mcp.Handler) http.HandlerFunc {
 }
 
 func writeError(w http.ResponseWriter, id interface{}, code int, msg, data string) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(mcpResponse{
+	writeJSON(w, mcpResponse{
 		JSONRPC: "2.0",
 		ID:      id,
 		Error: map[string]interface{}{
