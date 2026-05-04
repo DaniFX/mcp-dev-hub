@@ -1,28 +1,8 @@
 ### Health check
 GET http://localhost:8080/health
 
-### list_repos — account default (via GITHUB_TOKEN env)
+### list_repos — account personal (via GITHUB_TOKEN_PERSONAL env)
 POST http://localhost:8080/mcp
-X-API-Key: changeme
-Content-Type: application/json
-
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": {
-    "name": "list_repos",
-    "arguments": {
-      "account": "default",
-      "type": "owner",
-      "page": 1
-    }
-  }
-}
-
-### list_repos — solo repo pubblici
-POST http://localhost:8080/mcp
-X-API-Key: changeme
 Content-Type: application/json
 
 {
@@ -32,15 +12,15 @@ Content-Type: application/json
   "params": {
     "name": "list_repos",
     "arguments": {
-      "account": "default",
-      "type": "public"
+      "account": "personal",
+      "type": "owner",
+      "page": 1
     }
   }
 }
 
-### list_repos — account non esistente (test errore)
+### list_repos — solo repo pubblici
 POST http://localhost:8080/mcp
-X-API-Key: changeme
 Content-Type: application/json
 
 {
@@ -50,7 +30,83 @@ Content-Type: application/json
   "params": {
     "name": "list_repos",
     "arguments": {
-      "account": "nonexistent"
+      "account": "personal",
+      "type": "public"
+    }
+  }
+}
+
+### create_issue — issue base senza labels
+POST http://localhost:8080/mcp
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "create_issue",
+    "arguments": {
+      "account": "personal",
+      "repo": "DaniFX/mcp-dev-hub",
+      "title": "Test issue da MCP tool",
+      "body": "Questa issue è stata creata automaticamente dal tool `create_issue` del server MCP."
+    }
+  }
+}
+
+### create_issue — con labels e assignees
+POST http://localhost:8080/mcp
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "tools/call",
+  "params": {
+    "name": "create_issue",
+    "arguments": {
+      "account": "personal",
+      "repo": "DaniFX/mcp-dev-hub",
+      "title": "Bug: endpoint /mcp non risponde",
+      "body": "## Descrizione\n\nL'endpoint `/mcp` restituisce 500 in certi casi.\n\n## Steps to reproduce\n\n1. Avvia il server\n2. Invia una richiesta malformata\n3. Osserva il 500",
+      "labels": ["bug"],
+      "assignees": ["DaniFX"]
+    }
+  }
+}
+
+### create_issue — test errore: repo mancante
+POST http://localhost:8080/mcp
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "method": "tools/call",
+  "params": {
+    "name": "create_issue",
+    "arguments": {
+      "account": "personal",
+      "title": "Issue senza repo"
+    }
+  }
+}
+
+### create_issue — test errore: account non esistente
+POST http://localhost:8080/mcp
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 6,
+  "method": "tools/call",
+  "params": {
+    "name": "create_issue",
+    "arguments": {
+      "account": "nonexistent",
+      "repo": "DaniFX/mcp-dev-hub",
+      "title": "Test"
     }
   }
 }

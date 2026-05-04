@@ -60,13 +60,14 @@ func main() {
 	// --- register MCP tools ---
 	h := mcp.NewHandler()
 	h.Register("list_repos", tools.ListReposHandler(mc))
+	h.Register("create_issue", tools.CreateIssueHandler(mc))
 
 	// --- HTTP routes ---
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", healthHandler)
 	mux.HandleFunc("/mcp", mcpHandler(h))
 
-	log.Printf("mcp-dev-hub listening on :%s — accounts: %d — tools: list_repos", port, len(accounts))
+	log.Printf("mcp-dev-hub listening on :%s — accounts: %d — tools: list_repos, create_issue", port, len(accounts))
 	if err := http.ListenAndServe(":"+port, mux); err != nil {
 		log.Fatalf("server error: %v", err)
 	}
@@ -75,7 +76,7 @@ func main() {
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintln(w, `{"status":"ok","tools":["list_repos"]}`)
+	fmt.Fprintln(w, `{"status":"ok","tools":["list_repos","create_issue"]}`)
 }
 
 type mcpRequest struct {
