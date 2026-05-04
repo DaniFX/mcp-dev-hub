@@ -1,5 +1,7 @@
 package mcp
 
+import "fmt"
+
 // Handler routes MCP JSON-RPC 2.0 requests to the appropriate tool.
 type Handler struct {
 	tools map[string]ToolFunc
