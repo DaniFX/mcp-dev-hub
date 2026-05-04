@@ -1,6 +1,6 @@
 {
   "name": "mcp-dev-hub [develop]",
-  "image": "mcr.microsoft.com/devcontainers/go:1-1.22-bullseye",
+  "image": "mcr.microsoft.com/devcontainers/go:1-bullseye",
 
   "features": {
     "ghcr.io/devcontainers/features/gcloud-cli:1": {},
