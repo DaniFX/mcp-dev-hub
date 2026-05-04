@@ -1,0 +1,31 @@
+# Binaries
+/bin/
+*.exe
+*.out
+
+# Go
+*.test
+*.prof
+vendor/
+
+# Environment & secrets
+.env
+*.env.*
+configs/accounts.json
+configs/*.key
+service-account.json
+
+# Firebase
+.firebase/
+
+# GCP
+gcloud-key.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db

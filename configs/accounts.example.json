@@ -1,0 +1,10 @@
+[
+  {
+    "alias": "personal",
+    "token": "YOUR_GITHUB_TOKEN_HERE"
+  },
+  {
+    "alias": "work",
+    "token": "YOUR_GITHUB_TOKEN_HERE"
+  }
+]
