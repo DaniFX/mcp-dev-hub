@@ -1,0 +1,66 @@
+{
+  "name": "mcp-dev-hub",
+  "image": "mcr.microsoft.com/devcontainers/go:1.22",
+
+  "features": {
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "1.22"
+    },
+    "ghcr.io/devcontainers/features/gcloud-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+
+  "forwardPorts": [8080, 2345],
+  "portsAttributes": {
+    "8080": {
+      "label": "MCP Server",
+      "onAutoForward": "notify"
+    },
+    "2345": {
+      "label": "Delve Debugger",
+      "onAutoForward": "silent"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "ms-azuretools.vscode-docker",
+        "GoogleCloudTools.cloudcode",
+        "github.vscode-github-actions",
+        "humao.rest-client",
+        "eamodio.gitlens",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      "settings": {
+        "go.toolsManagement.autoUpdate": true,
+        "go.useLanguageServer": true,
+        "go.lintTool": "golangci-lint",
+        "go.lintOnSave": "package",
+        "go.formatTool": "goimports",
+        "go.delveConfig": {
+          "dlvLoadConfig": {
+            "followPointers": true,
+            "maxVariableRecurse": 3,
+            "maxStringLen": 400,
+            "maxArrayValues": 64
+          }
+        },
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "golang.go",
+        "files.eol": "\n"
+      }
+    }
+  },
+
+  "remoteEnv": {
+    "GOPATH": "/go",
+    "PORT": "8080",
+    "GCP_PROJECT_ID": "",
+    "MCP_API_KEY": ""
+  }
+}

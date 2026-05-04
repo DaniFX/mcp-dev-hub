@@ -1,0 +1,43 @@
+### Health check
+GET http://localhost:8080/health
+
+### MCP ping
+GET http://localhost:8080/mcp
+X-API-Key: changeme
+Content-Type: application/json
+
+### MCP tool call — list_repos (stub)
+POST http://localhost:8080/mcp
+X-API-Key: changeme
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "list_repos",
+    "arguments": {
+      "account": "personal"
+    }
+  }
+}
+
+### MCP tool call — get_pipeline_status (stub)
+POST http://localhost:8080/mcp
+X-API-Key: changeme
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "get_pipeline_status",
+    "arguments": {
+      "account": "personal",
+      "owner": "DaniFX",
+      "repo": "mcp-dev-hub"
+    }
+  }
+}

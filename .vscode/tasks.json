@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build",
+      "type": "shell",
+      "command": "go build ./...",
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always" }
+    },
+    {
+      "label": "Test",
+      "type": "shell",
+      "command": "go test ./... -v",
+      "group": { "kind": "test", "isDefault": true },
+      "presentation": { "reveal": "always" }
+    },
+    {
+      "label": "Lint",
+      "type": "shell",
+      "command": "golangci-lint run ./...",
+      "presentation": { "reveal": "always" }
+    },
+    {
+      "label": "Run Server",
+      "type": "shell",
+      "command": "go run ./cmd/server",
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "isBackground": true
+    },
+    {
+      "label": "Docker Build",
+      "type": "shell",
+      "command": "docker build -t mcp-dev-hub:dev .",
+      "presentation": { "reveal": "always" }
+    },
+    {
+      "label": "Docker Run",
+      "type": "shell",
+      "command": "docker run --rm -p 8080:8080 --env-file .env mcp-dev-hub:dev",
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "isBackground": true
+    }
+  ]
+}

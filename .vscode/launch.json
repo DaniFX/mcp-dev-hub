@@ -1,0 +1,41 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch MCP Server",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/server",
+      "env": {
+        "PORT": "8080",
+        "GCP_PROJECT_ID": "${env:GCP_PROJECT_ID}",
+        "MCP_API_KEY": "${env:MCP_API_KEY}"
+      },
+      "args": [],
+      "showLog": true
+    },
+    {
+      "name": "Debug MCP Server (Delve)",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/cmd/server",
+      "env": {
+        "PORT": "8080",
+        "GCP_PROJECT_ID": "${env:GCP_PROJECT_ID}",
+        "MCP_API_KEY": "${env:MCP_API_KEY}"
+      },
+      "dlvFlags": ["--check-go-version=false"],
+      "showLog": true
+    },
+    {
+      "name": "Run All Tests",
+      "type": "go",
+      "request": "launch",
+      "mode": "test",
+      "program": "${workspaceFolder}/...",
+      "showLog": true
+    }
+  ]
+}
