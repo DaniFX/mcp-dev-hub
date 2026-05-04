@@ -1,6 +1,6 @@
 {
   "name": "mcp-dev-hub [develop]",
-  "image": "mcr.microsoft.com/devcontainers/go:1-bullseye",
+  "image": "mcr.microsoft.com/devcontainers/go:1-bookworm",
 
   "postCreateCommand": "bash .devcontainer/setup.sh",
 
